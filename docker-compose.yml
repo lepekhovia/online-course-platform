@@ -1,0 +1,40 @@
+x-env-project: &project-env
+  COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+  SECRET_KEY: ${SECRET_KEY}
+  DEBUG: ${DEBUG}
+  PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
+  PYTHONDONTWRITEBYTECODE: ${PYTHONDONTWRITEBYTECODE}
+  USER_ID: ${USER_ID}
+  GROUP_ID: ${GROUP_ID}
+  USER: ${USER}
+  GROUP: ${GROUP}
+  ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+
+services:
+  #Django backend
+  backend:
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      <<: *project-env
+    container_name: backend
+    restart: always
+    command:
+      - bash
+      - -c
+      - |
+        python manage.py collectstatic --noinput
+        ${BACKEND_RUN_SRVR_COMMAND}
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+        USER: ${USER}
+        GROUP: ${GROUP}
+    hostname: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./product:/product
+      - ./static:/static
