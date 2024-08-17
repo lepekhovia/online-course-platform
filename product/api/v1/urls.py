@@ -3,7 +3,7 @@ from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
                                    SpectacularSwaggerView)
 from rest_framework.routers import DefaultRouter
 
-from api.v1.views.course_view import AvailableForPurchaseCourseViewSet, GroupViewSet, LessonViewSet
+from api.v1.views.course_view import AvailableForPurchaseCourseViewSet, GroupViewSet, LessonViewSet, PurchasedCoursesViewSet
 from api.v1.views.user_view import UserViewSet
 
 
@@ -15,6 +15,8 @@ v1_router.register(
 )
 v1_router.register(
     r'courses/(?P<course_id>\d+)/groups', GroupViewSet, basename='groups'
+)
+v1_router.register('purchased', PurchasedCoursesViewSet, basename='purchased'
 )
 
 urlpatterns = [
