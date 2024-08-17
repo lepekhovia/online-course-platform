@@ -13,7 +13,14 @@ def post_save_subscription(sender, instance: Purchase, created, **kwargs):
     """
 
     if created:
-        pass
+        group = Group.objects.annotate(
+            count_students=Count('students')
+        ).filter(course=instance.course).order_by('count_students').first()
+
+        if group:
+            group.students.add(instance.user)
+            instance.group = group
+            instance.save()
 
 
 @receiver(post_save, sender=CustomUser)
