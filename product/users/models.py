@@ -5,6 +5,13 @@ from django.db import models
 class CustomUser(AbstractUser):
     """Кастомная модель пользователя - студента."""
 
+    STUDENT = "student"
+    TEACHER = "teacher"
+    STATUS_CHOICES = [
+        (STUDENT, "Студент"),
+        (TEACHER, "Преподаватель"),
+    ]
+
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
         max_length=250,
@@ -17,6 +24,18 @@ class CustomUser(AbstractUser):
         'last_name',
         'password'
     )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default=STUDENT,
+        verbose_name='Статус'
+    )
+    groups = models.ManyToManyField(
+        "courses.Group",
+        verbose_name='Группы',
+        related_name='students',
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -24,27 +43,4 @@ class CustomUser(AbstractUser):
         ordering = ('-id',)
 
     def __str__(self):
-        return self.get_full_name()
-
-
-class Balance(models.Model):
-    """Модель баланса пользователя."""
-
-    # TODO
-
-    class Meta:
-        verbose_name = 'Баланс'
-        verbose_name_plural = 'Балансы'
-        ordering = ('-id',)
-
-
-class Subscription(models.Model):
-    """Модель подписки пользователя на курс."""
-
-    # TODO
-
-    class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
-        ordering = ('-id',)
-
+        return f" ({self.status})" + self.get_full_name()

@@ -8,7 +8,6 @@ x-env-project: &project-env
   GROUP_ID: ${GROUP_ID}
   USER: ${USER}
   GROUP: ${GROUP}
-  ALLOWED_HOSTS: ${ALLOWED_HOSTS}
 
 services:
   #Django backend
